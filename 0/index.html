@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 0: Becoming Friends with Your Camera</title>
+    <style>
+        :root {
+            --ink: #1c1c1c;
+            --muted: #6b6b6b;
+            --line: #e4e4e4;
+            --bg: #f2ede3;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0 auto;
+            max-width: 820px;
+            padding: 60px 24px 100px;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--bg);
+        }
+        a.back {
+            display: inline-block;
+            font-size: 0.85em;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 40px;
+            border: 1px solid var(--line);
+            padding: 6px 14px;
+        }
+        a.back:hover {
+            border-color: var(--muted);
+            color: var(--ink);
+        }
+        h1 {
+            font-size: 1.9em;
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+        .subtitle {
+            color: var(--muted);
+            margin: 0 0 60px;
+            font-size: 0.95em;
+        }
+        h2 {
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+            margin-top: 70px;
+            margin-bottom: 24px;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .row figure {
+            flex: 1;
+            min-width: 260px;
+            margin: 0;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.85em;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        .thoughts {
+            margin-top: 24px;
+            padding-left: 16px;
+            border-left: 2px solid var(--line);
+        }
+        .thoughts p {
+            margin: 0;
+            color: #333;
+        }
+        .thoughts .label {
+            display: block;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .gif-wrap {
+            text-align: center;
+        }
+        .gif-wrap img {
+            max-width: 460px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <a class="back" href="../index.html">&larr; Back to portfolio</a>
+    <h1>Project 0: Becoming Friends with Your Camera</h1>
+    <p class="subtitle">CS180 &middot; Intro to Computer Vision and Computational Photography</p>
+
+    <h2>Part 1 &mdash; Selfie: The Wrong Way vs. The Right Way</h2>
+    <div class="row">
+        <figure>
+            <img src="media/selfie_close.jpg" alt="Close-up selfie">
+            <figcaption>Close up (wrong way)</figcaption>
+        </figure>
+        <figure>
+            <img src="media/selfie_far.jpg" alt="Zoomed-in selfie from farther away">
+            <figcaption>Arms length + zoomed in (right way)</figcaption>
+        </figure>
+    </div>
+    <div class="thoughts">
+        <span class="label">Thoughts</span>
+        <p>The photo taken further away looks a lot better because the proportion of my features is more similar to what they are in real life. Things like my mouth, which is gigantic in the first photo, is smaller and more proportional to the rest of my face in the second.</p>
+    </div>
+
+    <h2>Part 2 &mdash; Architectural Perspective Compression</h2>
+    <div class="row">
+        <figure>
+            <img src="media/building_walk.jpg" alt="Building photographed up close without zoom">
+            <figcaption>Zoomed in far away</figcaption>
+        </figure>
+        <figure>
+            <img src="media/building_zoom.jpg" alt="Building photographed zoomed in from far away">
+            <figcaption>Close up, no zoom</figcaption>
+        </figure>
+    </div>
+    <div class="thoughts">
+        <span class="label">Thoughts</span>
+        <p>The picture on the left looks compressed because zoomed out, there is less percentage difference in distance between adjacent parts of the building and the camera. A large portion of the distance between parts of the building and the camera is composed of the distance between the camera and the building as a whole. Close up without zoom, with the camera is closer to the whole building, the percentage difference between adjacent parts of the building and the camera is larger, causing the photo to be less flat and more dynamic.</p>
+    </div>
+
+    <h2>Part 3 &mdash; The Dolly Zoom</h2>
+    <div class="gif-wrap">
+        <img src="media/dolly.gif" alt="Dolly zoom animated gif">
+    </div>
+</body>
+</html>
