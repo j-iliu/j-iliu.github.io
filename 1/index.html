@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project 1: Colorizing the Prokudin-Gorskii Photo Collection</title>
+    <style>
+        :root {
+            --ink: #1c1c1c;
+            --muted: #6b6b6b;
+            --line: #e4e4e4;
+            --bg: #f2ede3;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0 auto;
+            max-width: 820px;
+            padding: 60px 24px 100px;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--bg);
+        }
+        a.back {
+            display: inline-block;
+            font-size: 0.85em;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 40px;
+            border: 1px solid var(--line);
+            padding: 6px 14px;
+        }
+        a.back:hover {
+            border-color: var(--muted);
+            color: var(--ink);
+        }
+        h1 {
+            font-size: 1.9em;
+            font-weight: 600;
+            margin: 0 0 4px;
+        }
+        .subtitle {
+            color: var(--muted);
+            margin: 0 0 60px;
+            font-size: 0.95em;
+        }
+        h2 {
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+            margin-top: 70px;
+            margin-bottom: 24px;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .row figure {
+            flex: 1;
+            min-width: 260px;
+            margin: 0;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.85em;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        .thoughts {
+            margin-top: 24px;
+            padding-left: 16px;
+            border-left: 2px solid var(--line);
+        }
+        .thoughts p {
+            margin: 0;
+            color: #333;
+        }
+        .thoughts .label {
+            display: block;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .gif-wrap {
+            text-align: center;
+        }
+        .gif-wrap img {
+            max-width: 460px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
+        .grid figure { margin: 0; }
+        .single { max-width: 320px; margin: 0 auto; }
+        table { border-collapse: collapse; width: 100%; font-size: 0.9em; margin-top: 8px; }
+        th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+        th { color: var(--muted); font-weight: 600; font-size: 0.85em; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+    <a class="back" href="../index.html">&larr; Back to portfolio</a>
+    <h1>Project 1: Colorizing the Prokudin-Gorskii Photo Collection</h1>
+    <p class="subtitle">CS180 &middot; Intro to Computer Vision and Computational Photography</p>
+
+    <h2>Part 1 &mdash; Single-Scale Alignment</h2>
+    <div class="single">
+        <figure>
+            <img src="out/single_alignment.jpg" alt="Cathedral, single-scale alignment">
+            <figcaption>Cathedral &mdash; G (5, 2), R (12, 3)</figcaption>
+        </figure>
+    </div>
+    <div class="thoughts">
+        <span class="label">Approach</span>
+        <p>I used the skeleton code to import, read, and divide the image into its color channels. I then cropped out the margins / edges that were outside of the photograph because they were messing with my correlation metrics. I used the L2 norm metric to sweep from -15 to 15 in both x and y next, getting those numbers from the project information page. I used a double for loop and saved the pair with the lowest L2 error. I used np.roll so I wouldn't have to worry about the size of the images or padding from the shifts. After that, I followed the skeleton code, aligning green and red to blue, then applying the shifts and stacking them.</p>
+    </div>
+
+    <h2>Part 2 &mdash; Multi-Scale Pyramid Alignment</h2>
+    <div class="grid"><figure><img src="out/cathedral_aligned.jpg" alt="cathedral &mdash; G (5, 2), R (12, 3)" loading="lazy"><figcaption>cathedral &mdash; G (5, 2), R (12, 3)</figcaption></figure><figure><img src="out/church_aligned.jpg" alt="church &mdash; G (25, -5), R (58, -13)" loading="lazy"><figcaption>church &mdash; G (25, -5), R (58, -13)</figcaption></figure><figure><img src="out/emir_aligned.jpg" alt="emir &mdash; G (49, 24), R (106, 41)" loading="lazy"><figcaption>emir &mdash; G (49, 24), R (106, 41)</figcaption></figure><figure><img src="out/harvesters_aligned.jpg" alt="harvesters &mdash; G (60, 17), R (125, 14)" loading="lazy"><figcaption>harvesters &mdash; G (60, 17), R (125, 14)</figcaption></figure><figure><img src="out/icon_aligned.jpg" alt="icon &mdash; G (40, 17), R (88, 22)" loading="lazy"><figcaption>icon &mdash; G (40, 17), R (88, 22)</figcaption></figure><figure><img src="out/ilemselga_aligned.jpg" alt="ilemselga &mdash; G (40, 6), R (131, 9)" loading="lazy"><figcaption>ilemselga &mdash; G (40, 6), R (131, 9)</figcaption></figure><figure><img src="out/melons_aligned.jpg" alt="melons &mdash; G (82, 10), R (178, 13)" loading="lazy"><figcaption>melons &mdash; G (82, 10), R (178, 13)</figcaption></figure><figure><img src="out/monastery_aligned.jpg" alt="monastery &mdash; G (-3, 2), R (3, 3)" loading="lazy"><figcaption>monastery &mdash; G (-3, 2), R (3, 3)</figcaption></figure><figure><img src="out/religous_painting_aligned.jpg" alt="religous painting &mdash; G (28, 4), R (69, 8)" loading="lazy"><figcaption>religous painting &mdash; G (28, 4), R (69, 8)</figcaption></figure><figure><img src="out/self_portrait_aligned.jpg" alt="self portrait &mdash; G (79, 29), R (177, 37)" loading="lazy"><figcaption>self portrait &mdash; G (79, 29), R (177, 37)</figcaption></figure><figure><img src="out/siren_aligned.jpg" alt="siren &mdash; G (49, -7), R (96, -25)" loading="lazy"><figcaption>siren &mdash; G (49, -7), R (96, -25)</figcaption></figure><figure><img src="out/three_generations_aligned.jpg" alt="three generations &mdash; G (53, 14), R (111, 12)" loading="lazy"><figcaption>three generations &mdash; G (53, 14), R (111, 12)</figcaption></figure><figure><img src="out/tobolsk_aligned.jpg" alt="tobolsk &mdash; G (3, 3), R (7, 4)" loading="lazy"><figcaption>tobolsk &mdash; G (3, 3), R (7, 4)</figcaption></figure><figure><img src="out/wharf_aligned.jpg" alt="wharf &mdash; G (15, -7), R (82, -16)" loading="lazy"><figcaption>wharf &mdash; G (15, -7), R (82, -16)</figcaption></figure></div>
+    <div class="thoughts">
+        <span class="label">Approach</span>
+        <p>I used the same starting code as the skeleton to read and divide the image. Using the code from the single alignment as a base, I recursively implemented pyramid alignment, downsampling by 2x each level with sk.transform.rescale. The recursion stopped if the height or width was less than 10 or 20 respectively. I chose such small numbers because I chose a very small guess range of 3 compared to the 15 of the single alignment. I started at 20, and worked my way down to 15, 10, 7, 3, and 1. I found 1 to be too small and 3 to be perfect, being more efficient while still being accurate. I found the rollover to impact the quality of the alignments as well, so in addition to cropping out the edges framing the photograph, I cropped more to cut out any potential information from the rollover. I also tried Normalized Cross Correlation loss instead of L2 loss, and I found that NCC loss works a lot better, so I ended up using that. In the photograph of the emir, the red was extremely misaligned with the blue, so I tried aligning that to the green instead and adding the offset from blue to green to the offset of green to red to get the offset of blue to red, and it worked really well.</p>
+    </div>
+
+    <h2>Offsets</h2>
+    <table>
+        <tr><th>Image</th><th>Green (row, col)</th><th>Red (row, col)</th></tr>
+        <tr><td>cathedral</td><td>(5, 2)</td><td>(12, 3)</td></tr><tr><td>church</td><td>(25, -5)</td><td>(58, -13)</td></tr><tr><td>emir</td><td>(49, 24)</td><td>(106, 41)</td></tr><tr><td>harvesters</td><td>(60, 17)</td><td>(125, 14)</td></tr><tr><td>icon</td><td>(40, 17)</td><td>(88, 22)</td></tr><tr><td>ilemselga</td><td>(40, 6)</td><td>(131, 9)</td></tr><tr><td>melons</td><td>(82, 10)</td><td>(178, 13)</td></tr><tr><td>monastery</td><td>(-3, 2)</td><td>(3, 3)</td></tr><tr><td>religous painting</td><td>(28, 4)</td><td>(69, 8)</td></tr><tr><td>self portrait</td><td>(79, 29)</td><td>(177, 37)</td></tr><tr><td>siren</td><td>(49, -7)</td><td>(96, -25)</td></tr><tr><td>three generations</td><td>(53, 14)</td><td>(111, 12)</td></tr><tr><td>tobolsk</td><td>(3, 3)</td><td>(7, 4)</td></tr><tr><td>wharf</td><td>(15, -7)</td><td>(82, -16)</td></tr><tr><td>master-pnp-prok-00000-00087u</td><td>(48, 38)</td><td>(107, 52)</td></tr><tr><td>master-pnp-prok-00000-00090u</td><td>(46, -13)</td><td>(89, -45)</td></tr><tr><td>master-pnp-prok-01700-01769u</td><td>(61, -2)</td><td>(127, -11)</td></tr><tr><td>master-pnp-prok-01800-01841u</td><td>(67, 4)</td><td>(137, 0)</td></tr>
+    </table>
+
+    <h2>Part 3 &mdash; Additional Images from the Collection</h2>
+    <div class="grid"><figure><img src="out/master-pnp-prok-00000-00087u_aligned.jpg" alt="master-pnp-prok-00000-00087u &mdash; G (48, 38), R (107, 52)" loading="lazy"><figcaption>master-pnp-prok-00000-00087u &mdash; G (48, 38), R (107, 52)</figcaption></figure><figure><img src="out/master-pnp-prok-00000-00090u_aligned.jpg" alt="master-pnp-prok-00000-00090u &mdash; G (46, -13), R (89, -45)" loading="lazy"><figcaption>master-pnp-prok-00000-00090u &mdash; G (46, -13), R (89, -45)</figcaption></figure><figure><img src="out/master-pnp-prok-01700-01769u_aligned.jpg" alt="master-pnp-prok-01700-01769u &mdash; G (61, -2), R (127, -11)" loading="lazy"><figcaption>master-pnp-prok-01700-01769u &mdash; G (61, -2), R (127, -11)</figcaption></figure><figure><img src="out/master-pnp-prok-01800-01841u_aligned.jpg" alt="master-pnp-prok-01800-01841u &mdash; G (67, 4), R (137, 0)" loading="lazy"><figcaption>master-pnp-prok-01800-01841u &mdash; G (67, 4), R (137, 0)</figcaption></figure></div>
+</body>
+</html>
