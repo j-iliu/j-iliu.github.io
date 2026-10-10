@@ -1,0 +1,17 @@
+{
+  "time_4loop_s": 4.228272600041237,
+  "time_2loop_s": 0.48457880003843457,
+  "time_scipy_s": 0.0112572000361979,
+  "portrait_shape": [
+    343,
+    300
+  ],
+  "allclose_4_vs_scipy": true,
+  "allclose_2_vs_scipy": true,
+  "allclose_4_vs_2": true,
+  "allclose_dx_vs_scipy": true,
+  "allclose_dy_vs_scipy": true,
+  "blurtest_psnr_blur": 24.84342423008247,
+  "blurtest_psnr_resharp": 27.752968242128958,
+  "apple_hybrid_matches_saved_max_diff": 0.007321773151950234
+}

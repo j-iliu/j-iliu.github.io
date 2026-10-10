@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project 2: Fun with Filters and Frequencies</title>
+    <style>
+        :root {
+            --ink: #1c1c1c;
+            --muted: #6b6b6b;
+            --line: #e4e4e4;
+            --bg: #f2ede3;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0 auto;
+            max-width: 820px;
+            padding: 60px 24px 100px;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--bg);
+        }
+        a { color: inherit; }
+        a.back {
+            display: inline-block;
+            font-size: 0.85em;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 40px;
+            border: 1px solid var(--line);
+            padding: 6px 14px;
+        }
+        a.back:hover { border-color: var(--muted); color: var(--ink); }
+        h1 { font-size: 1.9em; font-weight: 600; margin: 0 0 4px; }
+        .subtitle { color: var(--muted); margin: 0 0 60px; font-size: 0.95em; }
+        h2 {
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+            margin-top: 70px;
+            margin-bottom: 24px;
+        }
+        h3 { font-size: 0.95em; font-weight: 600; margin: 40px 0 12px; }
+        p { margin: 0 0 14px; }
+        img { width: 100%; height: auto; display: block; }
+        figure { margin: 0; }
+        figcaption { text-align: center; font-size: 0.85em; color: var(--muted); margin-top: 8px; }
+        .grid { display: grid; gap: 24px 16px; margin: 16px 0; }
+        .g2 { grid-template-columns: repeat(2, 1fr); }
+        .g3 { grid-template-columns: repeat(3, 1fr); }
+        .g4 { grid-template-columns: repeat(4, 1fr); }
+        .g5 { grid-template-columns: repeat(5, 1fr); }
+        .narrow { max-width: 460px; margin: 16px auto; }
+        .pix img { image-rendering: pixelated; }
+        .pair { display: flex; gap: 28px; align-items: flex-end; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+        .pair figure { max-width: 100%; }
+        img.native { width: auto; max-width: 100%; margin: 0 auto; }
+        .thoughts { margin-top: 24px; padding-left: 16px; border-left: 2px solid var(--line); }
+        .thoughts p { margin: 0 0 10px; color: #333; }
+        .thoughts p:last-child { margin-bottom: 0; }
+        .thoughts .label {
+            display: block;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        details { margin-top: 18px; border: 1px solid var(--line); background: rgba(255,255,255,0.4); }
+        summary { cursor: pointer; padding: 8px 14px; font-size: 0.85em; color: var(--muted); }
+        details[open] summary { border-bottom: 1px solid var(--line); }
+        pre { margin: 0; padding: 14px; overflow-x: auto; font-size: 0.78em; line-height: 1.5; }
+        code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        @media (max-width: 640px) {
+            .g3, .g4, .g5 { grid-template-columns: repeat(2, 1fr); }
+        }
+</style>
+</head>
+<body>
+    <a class="back" href="../index.html">&larr; Back to portfolio</a>
+    <h1>Project 2: Fun with Filters and Frequencies</h1>
+    <p class="subtitle">CS180 &middot; Intro to Computer Vision and Computational Photography</p>
+
+<h2>Part 1.1 &mdash; Convolutions from Scratch</h2>
+<div class="grid g4"><figure><img src="img/me_gray.png" alt="Original (grayscale)" loading="lazy"><figcaption>Original (grayscale)</figcaption></figure><figure><img src="img/me_out4_box.png" alt="9&amp;times;9 box filter, 4 loops" loading="lazy"><figcaption>9&times;9 box filter, 4 loops</figcaption></figure><figure><img src="img/me_out2_box.png" alt="9&amp;times;9 box filter, 2 loops" loading="lazy"><figcaption>9&times;9 box filter, 2 loops</figcaption></figure><figure><img src="img/me_outsp_box.png" alt="9&amp;times;9 box filter, scipy" loading="lazy"><figcaption>9&times;9 box filter, scipy</figcaption></figure></div>
+<div class="grid g2 narrow"><figure><img src="img/me_out2_kx.png" alt="Dx (2 loops)" loading="lazy"><figcaption>D<sub>x</sub> (2 loops)</figcaption></figure><figure><img src="img/me_out2_ky.png" alt="Dy (2 loops)" loading="lazy"><figcaption>D<sub>y</sub> (2 loops)</figcaption></figure></div>
+<div class="thoughts"><span class="label">Approach</span><p>I flip the kernel with <code>np.flip</code>, zero-pad the image by (k&minus;1)/2 on each side, and slide the kernel over the padded image. The four-loop version loops over every output pixel and every kernel entry. The two-loop version loops over the output pixels and does the multiply-and-sum for each window in one numpy operation. All three results (4 loops, 2 loops, scipy) match with <code>np.allclose</code>, for the box filter and for D<sub>x</sub> and D<sub>y</sub>.</p></div>
+<div class="thoughts"><span class="label">Runtime</span><p>On this 300&times;343 portrait with a 9&times;9 box filter, the four-loop version took 4.23 s, the two-loop version took 0.48 s, and <code>scipy.signal.convolve2d</code> took 0.011 s. Removing the two innermost loops made it about 9&times; faster, and scipy was about 43&times; faster than my two-loop version because it runs in compiled code.</p></div>
+<div class="thoughts"><span class="label">Boundaries</span><p>I use zero padding and return the same size as the input (&ldquo;same&rdquo;). Pixels near the border are therefore averaged with zeros, so the box filter darkens the edges of the image, and D<sub>x</sub> and D<sub>y</sub> see a jump from the image to zero at the border. <code>convolve2d(..., mode=&quot;same&quot;)</code> fills with zeros by default, which is why my output matches it.</p></div>
+<details><summary>Code: conv2d_4loops, conv2d_2loops, box filter, D<sub>x</sub>/D<sub>y</sub> &mdash; <a href="code/part1point1.py">part1point1.py</a></summary><pre><code>def conv2d_4loops(arr, kernel):
+    tkernel = np.flip(kernel).copy()
+    out = np.zeros(arr.shape)
+
+    x_pad = (tkernel.shape[0] - 1) // 2
+    y_pad = (tkernel.shape[1] - 1) // 2
+    arr_temp = np.zeros((arr.shape[0] + 2 * x_pad, arr.shape[1] + 2 * y_pad))
+    arr_temp[x_pad:arr.shape[0] + x_pad, y_pad:arr.shape[1] + y_pad] = arr
+
+    for i in range(arr.shape[0]):
+        for j in range(arr.shape[1]):
+            for kx in range(tkernel.shape[0]):
+                for ky in range(tkernel.shape[1]):
+                    out[i][j] += arr_temp[i + kx,j + ky] * tkernel[kx, ky]
+    return out
+
+def conv2d_2loops(arr, kernel):
+    tkernel = np.flip(kernel).copy()
+    out = np.zeros(arr.shape)
+    
+    x_pad = (tkernel.shape[0] - 1) // 2
+    y_pad = (tkernel.shape[1] - 1) // 2
+    arr_temp = np.zeros((arr.shape[0] + 2 * x_pad, arr.shape[1] + 2 * y_pad))
+    arr_temp[x_pad:arr.shape[0] + x_pad, y_pad:arr.shape[1] + y_pad] = arr
+
+    for i in range(arr.shape[0]):
+        for j in range(arr.shape[1]):
+            out[i][j] += np.sum(tkernel * arr_temp[i : i + kernel.shape[0], j : j + kernel.shape[1]])
+    
+    return out
+
+def png2arr(path):
+    img = Image.open(path).convert(&#x27;L&#x27;)
+    out = np.array(img, dtype=np.float64)
+    return out
+
+kernel_xy = np.array([[-2, -1, 0], [-1, 0, 1], [0, 1, 2]])
+kernel_x = np.array([[1, 0, -1]])
+kernel_y = np.array([[1], [0], [-1]])
+
+box_kernel = np.ones((9,9)) / 81
+
+cat = png2arr(r&#x27;project2\cat.png&#x27;)
+
+start_time = time.perf_counter()
+out4 = conv2d_4loops(cat, box_kernel)
+end_time = time.perf_counter()
+execution_time = end_time - start_time
+print(f&quot;4 Loop: {execution_time} ms&quot;)
+
+start_time = time.perf_counter()
+out2 = conv2d_2loops(cat, box_kernel)
+end_time = time.perf_counter()
+execution_time = end_time - start_time
+print(f&quot;2 Loop: {execution_time} ms&quot;)
+
+start_time = time.perf_counter()
+outsp = convolve2d(cat, box_kernel, mode=&#x27;same&#x27;)
+end_time = time.perf_counter()
+execution_time = end_time - start_time
+print(f&quot;scipy : {execution_time} ms&quot;)
+
+print(np.allclose(out4, outsp))
+print(np.allclose(out4, out2))
+print(np.allclose(out2, outsp))
+
+#4 Loop: 3.651648400002159 ms
+#2 Loop: 0.5036876999947708 ms
+#scipy : 0.022186099988175556 ms
+
+plt.imsave(&#x27;project2/1p1/out2_box.png&#x27;, out2, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p1/out4_box.png&#x27;, out4, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p1/outsp_box.png&#x27;, outsp, cmap=&#x27;gray&#x27;)
+
+plt.imsave(&#x27;project2/1p1/out2_kx.png&#x27;, conv2d_2loops(cat, kernel_x), cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p1/out2_ky.png&#x27;, conv2d_2loops(cat, kernel_y), cmap=&#x27;gray&#x27;)
+
+fig, axes = plt.subplots(1, 4, figsize=(16,4))
+images = [cat, out4, out2, outsp]
+for i, ax in enumerate(axes):
+    ax.imshow(images[i], cmap=&quot;gray&quot;)
+    ax.axis(&#x27;off&#x27;)
+
+plt.tight_layout()
+fig.savefig(&quot;project2/1p1/norm.png&quot;)
+plt.show()</code></pre></details>
+<h2>Part 1.2 &mdash; Finite Difference Operator</h2>
+<div class="grid g4"><figure><img src="img/cameraman.png" alt="Cameraman" loading="lazy"><figcaption>Cameraman</figcaption></figure><figure><img src="img/pd_x.png" alt="Partial derivative in x" loading="lazy"><figcaption>Partial derivative in x</figcaption></figure><figure><img src="img/pd_y.png" alt="Partial derivative in y" loading="lazy"><figcaption>Partial derivative in y</figcaption></figure><figure><img src="img/gmi_fd.png" alt="Gradient magnitude" loading="lazy"><figcaption>Gradient magnitude</figcaption></figure></div>
+<figure><img src="img/bins.png" alt="Binarized gradient magnitude at thresholds 50, 55 (chosen) and 60" loading="lazy"><figcaption>Binarized gradient magnitude at thresholds 50, 55 (chosen) and 60</figcaption></figure>
+<div class="thoughts"><span class="label">Threshold</span><p>I chose a threshold of 55. It removes a lot of the noise from the grass while still keeping most of the lines in the background. Lowering the threshold keeps a lot of the grass noise, and raising it removes more of the background lines than it removes grass.</p></div>
+<details><summary>Code: partial derivatives, gradient magnitude, thresholds &mdash; <a href="code/part1point2.py">part1point2.py</a></summary><pre><code>def png2arr(path):
+    img = Image.open(path).convert(&#x27;L&#x27;)
+    out = np.array(img, dtype=np.float64)
+    return out
+
+man = png2arr(r&#x27;project2\cameraman.png&#x27;)
+
+kernel_x = np.array([[1, 0, -1]])
+kernel_y = np.array([[1], [0], [-1]])
+
+pd_x = convolve2d(man, kernel_x, mode=&#x27;same&#x27;)
+pd_y = convolve2d(man, kernel_y, mode=&#x27;same&#x27;)
+
+gmi = np.sqrt(pd_x ** 2 + pd_y ** 2)
+
+def binthresh(threshold):
+    return gmi &gt; threshold
+
+
+plt.imsave(&#x27;project2/1p2/pd_x.png&#x27;, pd_x, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p2/pd_y.png&#x27;, pd_y, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p2/gmi.png&#x27;, gmi, cmap=&#x27;gray&#x27;)
+
+fig, axes = plt.subplots(1, 3, figsize=(16,4))
+images = [binthresh(50), binthresh(55), binthresh(60)]
+titles = [50, 55, 60]
+for i, ax in enumerate(axes):
+    ax.imshow(images[i], cmap=&quot;gray&quot;)
+    ax.set_title(titles[i])
+    ax.axis(&#x27;off&#x27;)
+
+plt.tight_layout()
+fig.savefig(&#x27;project2/1p2/bins.png&#x27;, dpi=150, bbox_inches=&#x27;tight&#x27;)
+plt.show()</code></pre></details>
+<h2>Part 1.3 &mdash; Derivative of Gaussian (DoG) Filter</h2>
+<h3>Blur first, then take the derivatives</h3>
+<div class="grid g2 narrow"><figure><img src="img/pd_g.png" alt="Gaussian-blurred cameraman" loading="lazy"><figcaption>Gaussian-blurred cameraman</figcaption></figure><figure><img src="img/gmi_gauss.png" alt="Gradient magnitude of the blurred image" loading="lazy"><figcaption>Gradient magnitude of the blurred image</figcaption></figure></div>
+<div class="grid g3"><figure><img src="img/b20.png" alt="Threshold 20" loading="lazy"><figcaption>Threshold 20</figcaption></figure><figure><img src="img/b25.png" alt="Threshold 25" loading="lazy"><figcaption>Threshold 25</figcaption></figure><figure><img src="img/b30.png" alt="Threshold 30 (chosen)" loading="lazy"><figcaption>Threshold 30 (chosen)</figcaption></figure></div>
+<h3>One convolution with a DoG filter</h3>
+<div class="grid g2 pix narrow"><figure><img src="img/DoGx.png" alt="DoG filter, x (enlarged)" loading="lazy"><figcaption>DoG filter, x (enlarged)</figcaption></figure><figure><img src="img/DoGy.png" alt="DoG filter, y (enlarged)" loading="lazy"><figcaption>DoG filter, y (enlarged)</figcaption></figure></div>
+<div class="grid g2 narrow"><figure><img src="img/manxDoGx.png" alt="Image &amp;lowast; DoGx" loading="lazy"><figcaption>Image &lowast; DoG<sub>x</sub></figcaption></figure><figure><img src="img/manxDoGy.png" alt="Image &amp;lowast; DoGy" loading="lazy"><figcaption>Image &lowast; DoG<sub>y</sub></figcaption></figure></div>
+<div class="thoughts"><span class="label">Differences</span><p>Blurring first gives a much cleaner edge image. The grass noise almost disappears, and the edges are thicker and more continuous, which makes it easier to pick a threshold. The gradient magnitudes are smaller after blurring (the blur spreads each edge out), so the threshold had to drop from 55 to 30. I picked 30 because it gets rid of all of the grass but keeps most of the edges of the buildings. The cost is that thin details come out a bit softer.</p></div>
+<div class="thoughts"><span class="label">DoG check</span><p>Convolving the Gaussian with D<sub>x</sub> and D<sub>y</sub> first and then filtering the image once gives the same result as blurring and then taking the derivative everywhere except at the outermost border pixels (the largest difference away from the border is about 1e&minus;13). The border pixels differ because the two-step version zero-pads the image before the blur and then zero-pads the blurred image again before the derivative, while the DoG version only zero-pads once. That is why <code>np.allclose</code> reports False over the whole image.</p></div>
+<details><summary>Code: Gaussian, derivatives and DoG filters &mdash; <a href="code/part1point3.py">part1point3.py</a></summary><pre><code>def png2arr(path):
+    img = Image.open(path).convert(&#x27;L&#x27;)
+    out = np.array(img, dtype=np.float64)
+    return out
+
+man = png2arr(r&#x27;project2\cameraman.png&#x27;)
+
+g1d = cv2.getGaussianKernel(9, 1)
+gl2 = g1d @ g1d.T
+
+pd_g = convolve2d(man, gl2, mode=&#x27;same&#x27;)
+
+kernel_x = np.array([[1, 0, -1]])
+kernel_y = np.array([[1], [0], [-1]])
+
+pd_x = convolve2d(pd_g, kernel_x, mode=&#x27;same&#x27;)
+pd_y = convolve2d(pd_g, kernel_y, mode=&#x27;same&#x27;)
+
+DoGx = convolve2d(gl2, kernel_x) 
+DoGy = convolve2d(gl2, kernel_y) 
+
+plt.imsave(&#x27;project2/1p3/DoGx.png&#x27;, DoGx, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p3/DoGy.png&#x27;, DoGy, cmap=&#x27;gray&#x27;)
+
+plt.imsave(&#x27;project2/1p3/manxDoGx.png&#x27;, convolve2d(man, DoGx, mode=&#x27;same&#x27;), cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p3/manxDoGy.png&#x27;, convolve2d(man, DoGy, mode=&#x27;same&#x27;), cmap=&#x27;gray&#x27;)
+
+gmi = np.sqrt(pd_x ** 2 + pd_y ** 2)
+
+print(np.allclose(pd_x, convolve2d(man, DoGx, mode=&#x27;same&#x27;)))
+
+plt.imsave(&#x27;project2/1p3/gmi.png&#x27;, gmi, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p3/pd_g.png&#x27;, pd_g, cmap=&#x27;gray&#x27;)
+
+def binthresh(threshold):
+    return gmi &gt; threshold
+
+plt.imsave(&#x27;project2/1p3/b20.png&#x27;, binthresh(20), cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p3/b25.png&#x27;, binthresh(25), cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/1p3/b30.png&#x27;, binthresh(30), cmap=&#x27;gray&#x27;)
+
+fig, axes = plt.subplots(1, 5, figsize=(16,4))
+images = [pd_g, gmi, binthresh(20), binthresh(25), binthresh(30)]
+for i, ax in enumerate(axes):
+    ax.imshow(images[i], cmap=&quot;gray&quot;)
+    ax.axis(&#x27;off&#x27;)
+
+plt.tight_layout()
+plt.show()</code></pre></details>
+<h2>Part 2.1 &mdash; Image Sharpening</h2>
+<div class="thoughts"><span class="label">How it works</span><p>Unsharp masking amplifies the high-frequency content of an image, which is where the edges are. A Gaussian blur is a low-pass filter, so <em>image &minus; blur</em> keeps only the high frequencies. Adding &alpha; times that back to the image gives <em>image + &alpha;(image &minus; blur)</em>, and because convolution is linear this collapses into a single filter: <em>(1 + &alpha;)&middot;&delta; &minus; &alpha;&middot;G</em>, where &delta; is the impulse (identity) filter and G is the Gaussian.</p></div>
+<h3>Taj Mahal</h3>
+<div class="grid g3"><figure><img src="img/taj_blur.png" alt="Blurred (low frequencies)" loading="lazy"><figcaption>Blurred (low frequencies)</figcaption></figure><figure><img src="img/taj_sharp.png" alt="High frequencies (image &amp;minus; blur)" loading="lazy"><figcaption>High frequencies (image &minus; blur)</figcaption></figure><figure><img src="img/taj_sharpened.png" alt="Sharpened" loading="lazy"><figcaption>Sharpened</figcaption></figure></div>
+<div class="grid g4"><figure><img src="img/taj_alpha0p5.png" alt="&amp;alpha; = 0.5" loading="lazy"><figcaption>&alpha; = 0.5</figcaption></figure><figure><img src="img/taj_alpha1.png" alt="&amp;alpha; = 1" loading="lazy"><figcaption>&alpha; = 1</figcaption></figure><figure><img src="img/taj_alpha2.png" alt="&amp;alpha; = 2" loading="lazy"><figcaption>&alpha; = 2</figcaption></figure><figure><img src="img/taj_alpha10.png" alt="&amp;alpha; = 10" loading="lazy"><figcaption>&alpha; = 10</figcaption></figure></div>
+<h3>Cameraman</h3>
+<div class="grid g3"><figure><img src="img/cam_blur.png" alt="Blurred (low frequencies)" loading="lazy"><figcaption>Blurred (low frequencies)</figcaption></figure><figure><img src="img/cam_sharp.png" alt="High frequencies (image &amp;minus; blur)" loading="lazy"><figcaption>High frequencies (image &minus; blur)</figcaption></figure><figure><img src="img/cam_sharpened.png" alt="Sharpened" loading="lazy"><figcaption>Sharpened</figcaption></figure></div>
+<div class="grid g4"><figure><img src="img/cam_alpha0p5.png" alt="&amp;alpha; = 0.5" loading="lazy"><figcaption>&alpha; = 0.5</figcaption></figure><figure><img src="img/cam_alpha1.png" alt="&amp;alpha; = 1" loading="lazy"><figcaption>&alpha; = 1</figcaption></figure><figure><img src="img/cam_alpha2.png" alt="&amp;alpha; = 2" loading="lazy"><figcaption>&alpha; = 2</figcaption></figure><figure><img src="img/cam_alpha10.png" alt="&amp;alpha; = 10" loading="lazy"><figcaption>&alpha; = 10</figcaption></figure></div>
+<div class="thoughts"><span class="label">Varying &alpha;</span><p>As &alpha; goes up, the high-frequency components are amplified more. At &alpha; between 1 and 2 the image looks sharper, but at 10 the high-frequency components are so overpowering that the low-frequency base is heavily attenuated and you can mostly only see the edges.</p></div>
+<h3>Blur, then sharpen again</h3>
+<div class="grid g3"><figure><img src="img/me_sharp_orig.png" alt="Original (sharp)" loading="lazy"><figcaption>Original (sharp)</figcaption></figure><figure><img src="img/me_sharp_blur.png" alt="Blurred (&amp;sigma; = 2)" loading="lazy"><figcaption>Blurred (&sigma; = 2)</figcaption></figure><figure><img src="img/me_sharp_resharp.png" alt="Re-sharpened (&amp;alpha; = 2)" loading="lazy"><figcaption>Re-sharpened (&alpha; = 2)</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>The re-sharpened image is clearly sharper than the blurred one: the eyes, hair and clothing edges come back, and it is closer to the original (PSNR 24.8 dB for the blurred image vs. 27.8 dB after sharpening). It is not the same as the original, though. Sharpening only boosts frequencies that are still there, so fine detail that the blur removed (skin texture, individual hair strands) does not come back, and the edges look slightly harsh.</p></div>
+<details><summary>Code: unsharp mask filter (Taj Mahal; the cameraman and blur test use the same filter, see make_assets.py) &mdash; <a href="code/part2point1.py">part2point1.py</a></summary><pre><code>def png2arr(path):
+    img = Image.open(path).convert(&#x27;L&#x27;)
+    out = np.array(img, dtype=np.float64)
+    return out
+
+taj = png2arr(r&#x27;project2\taj.jpg&#x27;)
+
+g1d = cv2.getGaussianKernel(9, 1)
+gl2 = g1d @ g1d.T
+
+pd_g = convolve2d(taj, gl2, mode=&#x27;same&#x27;)
+
+sharp = taj - pd_g
+
+plt.imsave(&#x27;project2/2p1/blurred_pd_g.png&#x27;, pd_g, cmap=&#x27;gray&#x27;)
+
+plt.imsave(&#x27;project2/2p1/sharp.png&#x27;, sharp, cmap=&#x27;gray&#x27;)
+
+sharpened = taj + sharp
+
+plt.imsave(&#x27;project2/2p1/sharpened.png&#x27;, sharpened, cmap=&#x27;gray&#x27;)
+
+def sharpfil(alpha):
+    delta = np.zeros(gl2.shape)
+    delta[gl2.shape[0]//2, gl2.shape[1]//2] = 1
+    return (1 + alpha) * delta - alpha * gl2
+
+alpha0p5 = convolve2d(taj, sharpfil(0.5), mode=&#x27;same&#x27;)
+alpha1 = convolve2d(taj, sharpfil(1), mode=&#x27;same&#x27;)
+alpha2 = convolve2d(taj, sharpfil(2), mode=&#x27;same&#x27;)
+alpha10 = convolve2d(taj, sharpfil(10), mode=&#x27;same&#x27;)
+
+plt.imsave(&#x27;project2/2p1/alpha0p5.png&#x27;, alpha0p5, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/2p1/alpha1.png&#x27;, alpha1, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/2p1/alpha2.png&#x27;, alpha2, cmap=&#x27;gray&#x27;)
+plt.imsave(&#x27;project2/2p1/alpha10.png&#x27;, alpha10, cmap=&#x27;gray&#x27;)
+
+
+print(np.allclose(sharpened, alpha1))
+
+fig, axes = plt.subplots(1, 2, figsize=(16,4))
+images = [taj, sharpened]
+for i, ax in enumerate(axes):
+    ax.imshow(images[i], cmap=&quot;gray&quot;)
+    ax.axis(&#x27;off&#x27;)
+
+plt.tight_layout()
+plt.show()</code></pre></details>
+<h2>Part 2.2 &mdash; Hybrid Images</h2>
+<div class="thoughts"><span class="label">Method</span><p>For each pair, the high-pass image is <em>image &minus; Gaussian blur</em> (&sigma;<sub>1</sub>) and the low-pass image is the Gaussian blur of the other image (&sigma;<sub>2</sub>). I average the two and rescale the result to [0, 1]. I picked each sigma by looking at the hybrid up close and then shrunk, to simulate looking from far away: the high-pass image should dominate up close and the low-pass image should take over when it is small. A Gaussian with standard deviation &sigma; pixels has a cutoff frequency of roughly 1/(2&pi;&sigma;) cycles per pixel (where its response falls to about 60%).</p></div>
+<h3>Favorite: goofy apple + sad apple</h3>
+<div class="grid g2 narrow"><figure><img src="img/apple_goofy_orig.png" alt="Original, goofy (high-pass)" loading="lazy"><figcaption>Original, goofy (high-pass)</figcaption></figure><figure><img src="img/apple_sad_orig.png" alt="Original, sad (low-pass)" loading="lazy"><figcaption>Original, sad (low-pass)</figcaption></figure></div>
+<div class="grid g2 narrow"><figure><img src="img/apple_goofy_aligned.png" alt="Aligned, goofy" loading="lazy"><figcaption>Aligned, goofy</figcaption></figure><figure><img src="img/apple_sad_aligned.png" alt="Aligned, sad" loading="lazy"><figcaption>Aligned, sad</figcaption></figure></div>
+<p style="margin-top:28px"><strong>Log magnitude of the Fourier transform</strong></p>
+<div class="grid g5"><figure><img src="img/ft_goofy.png" alt="Goofy" loading="lazy"><figcaption>Goofy</figcaption></figure><figure><img src="img/ft_sad.png" alt="Sad" loading="lazy"><figcaption>Sad</figcaption></figure><figure><img src="img/ft_goofy_hpf.png" alt="Goofy, high-pass" loading="lazy"><figcaption>Goofy, high-pass</figcaption></figure><figure><img src="img/ft_sad_lpf.png" alt="Sad, low-pass" loading="lazy"><figcaption>Sad, low-pass</figcaption></figure><figure><img src="img/ft_apple_hybrid.png" alt="Hybrid" loading="lazy"><figcaption>Hybrid</figcaption></figure></div>
+<p style="margin-top:28px"><strong>Filtered images</strong></p>
+<div class="grid g2 narrow"><figure><img src="img/apple_hpf.png" alt="Goofy, high-pass (&amp;sigma;1 = 1.5)" loading="lazy"><figcaption>Goofy, high-pass (&sigma;<sub>1</sub> = 1.5)</figcaption></figure><figure><img src="img/apple_lpf.png" alt="Sad, low-pass (&amp;sigma;2 = 3)" loading="lazy"><figcaption>Sad, low-pass (&sigma;<sub>2</sub> = 3)</figcaption></figure></div>
+<div class="pair"><figure style="width:440px"><img src="img/apple_hybrid.png" alt="Hybrid"><figcaption>Hybrid</figcaption></figure><figure style="width:220px"><img src="img/apple_hybrid_small.png" alt="Hybrid at 50%"><figcaption>Hybrid at 50%</figcaption></figure></div>
+<div class="thoughts"><span class="label">Cutoff choice</span><p>&sigma;<sub>1</sub> = 1.5 for the high-pass (cutoff about 0.11 cycles/pixel) and &sigma;<sub>2</sub> = 3 for the low-pass (about 0.05 cycles/pixel). The high-pass keeps only the fine details of the goofy apple, such as the edges of the tongue and the outlines of the eyes, while the low-pass keeps the broad shape of the sad face, including the frown. The two ranges do not overlap, so the images do not fight each other. In the Fourier transforms, the high-pass transform has lost its center (the low frequencies), the low-pass transform is concentrated at the center, and the hybrid contains both.</p></div>
+<h3>Derek + Nutmeg</h3>
+<div class="grid g2 narrow"><figure><img src="img/nutmeg_orig.png" alt="Nutmeg (high-pass)" loading="lazy"><figcaption>Nutmeg (high-pass)</figcaption></figure><figure><img src="img/derek_orig.png" alt="Derek (low-pass)" loading="lazy"><figcaption>Derek (low-pass)</figcaption></figure></div>
+<div class="pair"><figure style="width:330px"><img src="img/derek_hybrid.png" alt="Hybrid"><figcaption>Hybrid</figcaption></figure><figure style="width:165px"><img src="img/derek_hybrid_small.png" alt="Hybrid at 50%"><figcaption>Hybrid at 50%</figcaption></figure></div>
+<div class="thoughts"><span class="label">Cutoff choice</span><p>These images are much larger than the apples (1297&times;733 vs. 444&times;420 pixels), so they needed much larger sigmas: &sigma;<sub>1</sub> = 15 for Nutmeg (high-pass) and &sigma;<sub>2</sub> = 20 for Derek (low-pass), which are cutoffs of about 0.011 and 0.008 cycles/pixel.</p></div>
+<h3>Wet cat + dry cat</h3>
+<div class="grid g2 narrow"><figure><img src="img/wetcat_orig.png" alt="Wet cat (high-pass)" loading="lazy"><figcaption>Wet cat (high-pass)</figcaption></figure><figure><img src="img/drycat_orig.png" alt="Dry cat (low-pass)" loading="lazy"><figcaption>Dry cat (low-pass)</figcaption></figure></div>
+<div class="pair"><figure style="width:140px"><img src="img/cat_hybrid.png" alt="Hybrid"><figcaption>Hybrid</figcaption></figure><figure style="width:70px"><img src="img/cat_hybrid_small.png" alt="Hybrid at 50%"><figcaption>Hybrid at 50%</figcaption></figure></div>
+<div class="thoughts"><span class="label">Cutoff choice</span><p>&sigma;<sub>1</sub> = 1.5 for the wet cat (high-pass) and &sigma;<sub>2</sub> = 3 for the dry cat (low-pass), about 0.11 and 0.05 cycles/pixel.</p></div>
+<div class="thoughts"><span class="label">What I noticed</span><p>Derek and Nutmeg had to use high sigmas because the images were larger, but I chose the sigmas by making sure the high-pass image overpowered the low-pass one when looking from up close, and that the low-pass image overpowered it when I shrank the image and looked from far away. From far away, the low-pass image is the only thing I can see, and the high-pass image disappears. Up close it is the opposite, though the shadow of the low-pass image is still mostly apparent.</p></div>
+<details><summary>Code: hybrid_image and the Fourier transforms &mdash; <a href="code/part2point2.py">part2point2.py</a></summary><pre><code>def hybrid_image(im1, im2, sigma1, sigma2):
+
+    im1g =  cv2.cvtColor(im1.astype(np.float32), cv2.COLOR_RGB2GRAY)
+    im2g =  cv2.cvtColor(im2.astype(np.float32), cv2.COLOR_RGB2GRAY)
+
+    g1d_l = cv2.getGaussianKernel(int(3*sigma2 + 1), sigma2)
+    img2_tmp = convolve2d(im2g, g1d_l, mode=&#x27;same&#x27;)
+    im2_lpf = convolve2d(img2_tmp, g1d_l.T, mode=&#x27;same&#x27;)
+
+    g1d_h = cv2.getGaussianKernel(int(3*sigma1 + 1), sigma1)
+
+    im1_hpfl_tmp = convolve2d(im1g, g1d_h, mode=&#x27;same&#x27;)
+
+    im1_hpfl = convolve2d(im1_hpfl_tmp, g1d_h.T, mode=&#x27;same&#x27;)
+
+    im1_hpf = im1g - im1_hpfl
+
+    out = 0.5 * im1_hpf + 0.5 * im2_lpf
+    
+    out = (out - out.min()) / (out.max() - out.min())
+
+    ft = lambda x: np.log(np.abs(np.fft.fftshift(np.fft.fft2(x))) + 1e-8)
+    plt.imsave(&#x27;project2/2p2/ft_im1.png&#x27;, ft(im1g), cmap=&#x27;gray&#x27;)
+    plt.imsave(&#x27;project2/2p2/ft_im2.png&#x27;, ft(im2g), cmap=&#x27;gray&#x27;)
+    plt.imsave(&#x27;project2/2p2/ft_im1_hpf.png&#x27;, ft(im1_hpf), cmap=&#x27;gray&#x27;)
+    plt.imsave(&#x27;project2/2p2/ft_im2_lpf.png&#x27;, ft(im2_lpf), cmap=&#x27;gray&#x27;)
+    plt.imsave(&#x27;project2/2p2/ft_hybrid.png&#x27;, ft(out), cmap=&#x27;gray&#x27;)
+
+    return out
+
+#sigma1 is blur u subtract, sigma2 is blur u add
+sigma1 = 15
+sigma2 = 20
+hybrid = hybrid_image(im1_aligned, im2_aligned, sigma1, sigma2)
+plt.imsave(&#x27;project2/2p2/derekcat.png&#x27;, hybrid, cmap=&#x27;gray&#x27;)
+
+small = cv2.resize(hybrid, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+plt.imsave(&#x27;project2/2p2/derekkcat_small.png&#x27;, small, cmap=&#x27;gray&#x27;)</code></pre></details>
+<h2>Part 2.3 &mdash; Gaussian and Laplacian Stacks</h2>
+<div class="thoughts"><span class="label">Approach</span><p>The stacks are never downsampled. Level <em>k</em> of the Gaussian stack blurs the original with &sigma; = 2<sup>k</sup> (1, 2, 4, 8, 16). Each Laplacian level is the difference of two neighboring Gaussian levels, and the last Laplacian level is the final (most blurred) Gaussian level, so the levels add back up to the original image.</p></div>
+<h3>Apple</h3>
+<figure><img src="img/apple_gstack.png" alt="Gaussian stack, &amp;sigma; = 1, 2, 4, 8, 16" loading="lazy"><figcaption>Gaussian stack, &sigma; = 1, 2, 4, 8, 16</figcaption></figure>
+<figure><img src="img/apple_lstack.png" alt="Laplacian stack (band-pass levels &amp;times;3 and offset to gray; the last level is the low-pass base)" loading="lazy"><figcaption>Laplacian stack (band-pass levels &times;3 and offset to gray; the last level is the low-pass base)</figcaption></figure>
+<h3>Orange</h3>
+<figure><img src="img/orange_gstack.png" alt="Gaussian stack, &amp;sigma; = 1, 2, 4, 8, 16" loading="lazy"><figcaption>Gaussian stack, &sigma; = 1, 2, 4, 8, 16</figcaption></figure>
+<figure><img src="img/orange_lstack.png" alt="Laplacian stack (band-pass levels &amp;times;3 and offset to gray; the last level is the low-pass base)" loading="lazy"><figcaption>Laplacian stack (band-pass levels &times;3 and offset to gray; the last level is the low-pass base)</figcaption></figure>
+<h3>Szeliski Figure 3.42 recreation</h3>
+<div class="narrow"><figure><img src="img/fig342.png" alt="Rows are Laplacian levels 0, 2 and 4, then the sum. Columns are the masked apple, the masked orange, and their combination: (a) through (l)." loading="lazy"><figcaption>Rows are Laplacian levels 0, 2 and 4, then the sum. Columns are the masked apple, the masked orange, and their combination: (a) through (l).</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>Each level of the Laplacian stack shows a different band of frequencies, and each band is blended using a differently smoothed version of the mask. Fine detail is blended over a narrow seam, and coarse structure is blended over a wide one.</p></div>
+<h2>Part 2.4 &mdash; Multiresolution Blending</h2>
+<h3>Oraple</h3>
+<div class="grid g4"><figure><img src="img/apple.png" alt="Apple" loading="lazy"><figcaption>Apple</figcaption></figure><figure><img src="img/orange.png" alt="Orange" loading="lazy"><figcaption>Orange</figcaption></figure><figure><img src="img/mask_step.png" alt="Mask" loading="lazy"><figcaption>Mask</figcaption></figure><figure><img src="img/oraple.png" alt="Blend" loading="lazy"><figcaption>Blend</figcaption></figure></div>
+<div class="thoughts"><span class="label">Why</span><p>I picked the oraple because I like oranges and apples, and it came with the project.</p></div>
+<h3>Frog + tadpole (irregular mask)</h3>
+<div class="grid g4"><figure><img src="img/tadpole.png" alt="Tadpole" loading="lazy"><figcaption>Tadpole</figcaption></figure><figure><img src="img/frog.png" alt="Frog" loading="lazy"><figcaption>Frog</figcaption></figure><figure><img src="img/mask_frog.png" alt="Mask" loading="lazy"><figcaption>Mask</figcaption></figure><figure><img src="img/frog_result.png" alt="Blend" loading="lazy"><figcaption>Blend</figcaption></figure></div>
+<div class="narrow"><figure><img src="img/frog_stacks.png" alt="Laplacian stack levels 0, 2 and 4, then the sum, for the masked tadpole, the masked frog, and the blend" loading="lazy"><figcaption>Laplacian stack levels 0, 2 and 4, then the sum, for the masked tadpole, the masked frog, and the blend</figcaption></figure></div>
+<div class="thoughts"><span class="label">Why and what went wrong</span><p>I picked the frog and the tadpole because frogs come from tadpoles. One obstacle was that the background of the frog image did not fully cover the space, and the leg of the frog also peeked through when it should not have.</p></div>
+<h3>Snake + worm (irregular mask)</h3>
+<div class="grid g4"><figure><img src="img/worm.png" alt="Worm" loading="lazy"><figcaption>Worm</figcaption></figure><figure><img src="img/snake.png" alt="Snake" loading="lazy"><figcaption>Snake</figcaption></figure><figure><img src="img/mask_snake.png" alt="Mask" loading="lazy"><figcaption>Mask</figcaption></figure><figure><img src="img/snake_result.png" alt="Blend" loading="lazy"><figcaption>Blend</figcaption></figure></div>
+<div class="narrow"><figure><img src="img/snake_stacks.png" alt="Laplacian stack levels 0, 2 and 4, then the sum, for the masked worm, the masked snake, and the blend" loading="lazy"><figcaption>Laplacian stack levels 0, 2 and 4, then the sum, for the masked worm, the masked snake, and the blend</figcaption></figure></div>
+<div class="thoughts"><span class="label">Why and what worked</span><p>I picked the snake and the worm because they are both long critters. What did work was the mending, and it looked pretty smooth. It would look better if the images were better aligned and the seam connecting the two were not so straight.</p></div>
+<details><summary>Code: stacks, blending and the figures (Parts 2.3 and 2.4) &mdash; <a href="code/part2point34.py">part2point34.py</a></summary><pre><code>def app_gauss(img, sigma):
+    g1d = cv2.getGaussianKernel(int(6*sigma + 1), sigma)
+    img_tmp = convolve2d(img, g1d, mode=&#x27;same&#x27;)
+    out = convolve2d(img_tmp, g1d.T, mode=&#x27;same&#x27;)
+    return out
+
+def gaussian_stack(img, spline, levels):
+    gstack_out = []
+    lstack_out = []
+    spline_out = []
+    for level in range(-1, levels):
+        if(level != -1):
+            spline_out.append(app_gauss(spline, 2 ** level))
+            gstack_out.append(app_gauss(img, 2 ** level))
+            lstack_out.append(gstack_out[len(gstack_out) - 2] - gstack_out[len(gstack_out) - 1])
+        else:
+            gstack_out.append(img)
+            spline_out.append(spline)
+
+    lstack_out.append(gstack_out[-1])
+
+    return lstack_out, spline_out, gstack_out
+
+def blend(im1, im2, mask, levels):
+
+    mask1 = mask
+    mask2 = np.ones(mask.shape) - mask
+    
+    out1 = gaussian_stack(im1, mask1, levels)
+    out2 = gaussian_stack(im2, mask2, levels)
+
+    blend1 = []
+    blend2 = []
+
+    final = np.zeros(im1.shape)
+
+    for level in range(levels + 1):
+        im1_l = out1[0][level] * out1[1][level]
+        im2_l = out2[0][level] * out2[1][level]
+
+        blend1.append(im1_l)
+        blend2.append(im2_l)
+
+        final += (im1_l + im2_l)
+
+    return final, blend1, blend2
+
+#mask = np.zeros(im1.shape[:2])
+#mask[:, im1.shape[1] // 2:] = 1 
+
+mask = plt.imread(&#x27;project2/mask_frog_tadpole.png&#x27;)[:, :, 0]
+
+channels = [blend(im1[:, :, c], im2[:, :, c], mask, 5) for c in range(3)]
+
+outf = np.dstack([c[0] for c in channels]) 
+b1 = [np.dstack([c[1][k] for c in channels]) for k in range(len(channels[0][1]))] 
+b2 = [np.dstack([c[2][k] for c in channels]) for k in range(len(channels[0][2]))] 
+b3 = [x + y for x, y in zip(b1, b2)]
+
+def show_lstack(img):
+    return np.clip(img * 3 + 0.5, 0, 1)
+
+rows = []
+for l in [0, 2, 4]:
+    rows.append([show_lstack(b1[l]), show_lstack(b2[l]), show_lstack(b3[l])])
+
+im1_t = sum(b1)
+im2_t = sum(b2) 
+
+rows.append([np.clip(im1_t, 0, 1), np.clip(im2_t, 0, 1), np.clip(outf, 0, 1)])
+
+
+fig, axes = plt.subplots(len(rows), 3, figsize=(12, 16), constrained_layout=True)
+letters = &quot;abcdefghijklmnopqrstuv&quot;
+for r in range(len(rows)):
+    for c in range(3):
+        ax = axes[r,c]
+        ax.imshow(rows[r][c])
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for s in ax.spines.values():
+            s.set_visible(False)
+        ax.set_xlabel(f&#x27;({letters[r*3 + c]})&#x27;)
+
+fig.savefig(&#x27;project2/2p4/frog_tp_stacks.png&#x27;, dpi=150, bbox_inches=&#x27;tight&#x27;)
+plt.imsave(&#x27;project2/2p4/frog_tp.png&#x27;, np.clip(outf, 0, 1), cmap=&#x27;gray&#x27;)
+
+plt.show()</code></pre></details>
+<h2>What I Learned</h2>
+<div class="thoughts"><span class="label">Reflection</span><p>The most important thing I learned from this project is that we perceive high-frequency data up close and low-frequency data from afar.</p></div>
+<h2>Code</h2>
+<p>All of the scripts for this project: <a href="code/part1point1.py">part1point1.py</a>, <a href="code/part1point2.py">part1point2.py</a>, <a href="code/part1point3.py">part1point3.py</a>, <a href="code/part2point1.py">part2point1.py</a>, <a href="code/part2point2.py">part2point2.py</a>, <a href="code/part2point34.py">part2point34.py</a>, <a href="code/align_image_code.py">align_image_code.py</a> (provided), and <a href="make_assets.py">make_assets.py</a>, which produced the portrait, cameraman, filtered-apple, stack and oraple images above.</p>
+</body>
+</html>
