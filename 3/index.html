@@ -111,25 +111,26 @@
 <div class="stack"><figure><img data-ph src="img/a/training_inputs.png" alt="Original and noisy inputs, t = 0.25, 0.50, 0.75"><figcaption>Original and noisy inputs, t = 0.25, 0.50, 0.75</figcaption></figure></div>
 <h2>1.2 &mdash; Classical Denoising</h2>
 <div class="stack"><figure><img data-ph src="img/a/blur_0.25.png" alt="Noisy input and Gaussian blur, t = 0.25"><figcaption>Noisy input and Gaussian blur, t = 0.25</figcaption></figure><figure><img data-ph src="img/a/blur_0.5.png" alt="Noisy input and Gaussian blur, t = 0.5"><figcaption>Noisy input and Gaussian blur, t = 0.5</figcaption></figure><figure><img data-ph src="img/a/blur_0.75.png" alt="Noisy input and Gaussian blur, t = 0.75"><figcaption>Noisy input and Gaussian blur, t = 0.75</figcaption></figure></div>
-<div class="thoughts"><span class="label">Blur strength chosen</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Blur strength chosen</span><p>The sigmas 8.0 at t=0.25, 4.0 at t=0.5, 2.0 at t=0.75 gave me the best denoised version. Blur works less well at high noise because in that regime blur there, only smidgens of details are left by the noising process and the blur just averages what's left away. In the example of t=0.25, almost all the facial details have been removed by blur, compared to regular noising that at least kept some of them.</p></div>
 <h2>1.3 &mdash; One-Step Denoising</h2>
 <div class="stack"><figure><img data-ph src="img/a/one_step_0.25.png" alt="Original, noisy input and one-step estimate, t = 0.25"><figcaption>Original, noisy input and one-step estimate, t = 0.25</figcaption></figure><figure><img data-ph src="img/a/one_step_0.5.png" alt="Original, noisy input and one-step estimate, t = 0.5"><figcaption>Original, noisy input and one-step estimate, t = 0.5</figcaption></figure><figure><img data-ph src="img/a/one_step_0.75.png" alt="Original, noisy input and one-step estimate, t = 0.75"><figcaption>Original, noisy input and one-step estimate, t = 0.75</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>At low t, like t=0.25, one step gives a very smooth results. There are no textures anywhere. Texture starts slowly coming back as you raise t, and at 0.75, the textures are almost all back. One step inaccurate because at low t, all the model can do is predict an average shirt, it has no chance to adjust and produce the creases and textures that one would see in a specific shirt.</p></div>
 <h2>1.4 &mdash; Visualizing Velocity</h2>
 <div class="narrow"><figure><img data-ph src="img/a/velocity_original.png" alt="Original"><figcaption>Original</figcaption></figure></div>
 <div class="stack"><figure><img data-ph src="img/a/velocity_0.25.png" alt="t = 0.25"><figcaption>t = 0.25</figcaption></figure><figure><img data-ph src="img/a/velocity_0.50.png" alt="t = 0.50"><figcaption>t = 0.50</figcaption></figure><figure><img data-ph src="img/a/velocity_0.75.png" alt="t = 0.75"><figcaption>t = 0.75</figcaption></figure></div>
-<div class="thoughts"><span class="label">Error heatmap limits</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Observations</span><p>The errors are higher on the edges of the image, like on the outline of the body and the creases of the sleeves, though as t gets higher, like at 0.75, the error on the edges lowers to be about the same as the error for the textures in the image.</p></div>
 <h2>1.5 &mdash; Iterative Denoising with Euler Sampling</h2>
 <h3>Euler denoising trajectory</h3>
 <div class="stack"><figure><img data-ph src="img/a/trajectory.png" alt="Initial state, every fifth update and final image"><figcaption>Initial state, every fifth update and final image</figcaption></figure></div>
 <h3>Denoising methods</h3>
 <div class="stack"><figure><img data-ph src="img/a/comparison.png" alt="Original, Gaussian blur, one-step estimate, Euler denoising"><figcaption>Original, Gaussian blur, one-step estimate, Euler denoising</figcaption></figure></div>
-<div class="thoughts"><span class="label">Comparison of methods</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Comparison of methods</span><p>Euler is the closest to original, with proper textures on the face and the shirt. One-step gives an image with a good outline, but missing many details, but blur is just all together pretty bad. Although it shows the original image each time, the edges are very soft and very blurry.</p></div>
 <h2>1.6 &mdash; Generating Images from Noise</h2>
 <div class="stack"><figure><img data-ph src="img/a/conditional_samples.png" alt="Seeds 180&amp;ndash;184, &amp;ldquo;a high quality photo&amp;rdquo;"><figcaption>Seeds 180&ndash;184, &ldquo;a high quality photo&rdquo;</figcaption></figure></div>
-<div class="thoughts"><span class="label">Observations on the generic prompt</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Observations on the generic prompt</span><p>All five samples are portraits of mixed genders and seed 180 and 183 gives distorted faces. 181 has messed up skin, and 182 has a messed up pointer and middle finger. Only 184 gives something reasonable.</p></div>
 <h2>2.1 &mdash; Classifier-Free Guidance</h2>
 <div class="stack"><figure><img data-ph src="img/a/cfg_samples.png" alt="Seeds 180&amp;ndash;184, guidance w = 7"><figcaption>Seeds 180&ndash;184, guidance w = 7</figcaption></figure></div>
-<div class="thoughts"><span class="label">Comparison with Section 1.6</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Comparison with Section 1.6</span><p>With guidance, the faces are much less distorted, though they are much smoother and the texture is underdeveloped.</p></div>
 <h2>3.1 &mdash; Image-to-Image Editing</h2>
 <h3>Campanile</h3>
 <div class="stack"><figure><img data-ph src="img/a/edit_campanile.png" alt="Starting times 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50"><figcaption>Starting times 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</figcaption></figure></div>
@@ -143,56 +144,63 @@
 <div class="stack"><figure><img data-ph src="img/a/edit_drawing_1.png" alt="img/a/edit_drawing_1.png"></figure></div>
 <h3>Drawing 2</h3>
 <div class="stack"><figure><img data-ph src="img/a/edit_drawing_2.png" alt="img/a/edit_drawing_2.png"></figure></div>
-<div class="thoughts"><span class="label">Observations</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Observations</span><p>At low t (0.02) the model just outputs whatever, keeping a vague outline of the original image but outputting whatever. The faces in my drawings were the last to get reconstructed, only being fixed at around 0.25 and 0.5. For the man in the pink sweater, t from 0.02 to 0.06 gives a man in a different pose with a distorted hand. Only after does the pose start becoming correct. For the alien costume, t=0.02 to 0.06 is an entirely different setting, with no cow or UFO.</p></div>
 <h2>3.2 &mdash; Text-Guided Image Editing</h2>
 <h3>Campanile</h3>
 <div class="stack"><figure><img data-ph src="img/a/text_edit_campanile.png" alt="img/a/text_edit_campanile.png"></figure></div>
-<div class="thoughts"><span class="label">Prompt (Campanile)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompt (Campanile)</span><p>corndog with a ketchup</p></div>
 <h3>My image 1</h3>
 <div class="stack"><figure><img data-ph src="img/a/text_edit_my_image_1.png" alt="img/a/text_edit_my_image_1.png"></figure></div>
-<div class="thoughts"><span class="label">Prompt (my image 1)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompt (my image 1)</span><p>turn this fella into a cat</p></div>
 <h3>My image 2</h3>
 <div class="stack"><figure><img data-ph src="img/a/text_edit_my_image_2.png" alt="img/a/text_edit_my_image_2.png"></figure></div>
-<div class="thoughts"><span class="label">Prompt (my image 2)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompt (my image 2)</span><p>a photograph of someone with 20 legs, 3 hands, 1 eye, and 4 ears</p></div>
+<div class="thoughts"><span class="label">Observations</span><p>The edit almost entirely overtakes the image at low t (t=0.02 - 0.04) for all these cases. For the Campanile, the edit was the best at around t=0.06, and afterwards the Campanile was the main focal point of the image. In the guy turning into a cat, it was best at t=0.14, with the man turning into a human cat hybrid with a cat face and cat paws. At lower t, he was entirely a cat. There was unreadable text, maybe from the amount of funny cat captions on the internet. For the man on all fours, the edit prompt didn't really work at all. The person got 4 legs max, and never got more than 2 hands, one eye, or more than 2 ears.</p></div>
 <h2>3.3 &mdash; Visual Anagrams</h2>
 <h3>Illusion 1</h3>
 <div class="stack"><figure><img data-ph src="img/a/anagram_views_0.png" alt="Upright and rotated 180&amp;deg;"><figcaption>Upright and rotated 180&deg;</figcaption></figure></div>
-<div class="thoughts"><span class="label">Prompts (illusion 1)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompts (illusion 1)</span><p>a watercolor of a big toe / a watercolor of a someone with an elongated forehead</p></div>
 <h3>Illusion 2</h3>
 <div class="stack"><figure><img data-ph src="img/a/anagram_views_1.png" alt="Upright and rotated 180&amp;deg;"><figcaption>Upright and rotated 180&deg;</figcaption></figure></div>
-<div class="thoughts"><span class="label">Prompts (illusion 2)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompts (illusion 2)</span><p>a lithograph of a sunken ship / a lithograph of a cockroach</p></div>
+<div class="thoughts"><span class="label">Observations</span><p>Both of these illusions worked well. I think the watercolor painting is very beautiful. The big toe shows itself in his forehead as well as in his total outline and texture. The man itself is also very beautifully constructed, and it is very distinguishable. For the cockroach and the ship, it worked slightly less well, but you can make out both the cockroach and the ship well. The ship is not sinking, but it does have a humongous hole that predicts its coming downfall.</p></div>
 <h2>3.4 &mdash; Hybrid Images</h2>
 <h3>Hybrid 1</h3>
 <div class="pair"><figure style="width:320px"><img data-ph src="img/a/hybrid_0.png" alt="Full size"><figcaption>Full size</figcaption></figure><figure style="width:64px"><img data-ph src="img/a/hybrid_0_small.png" alt="Reduced size"><figcaption>64&times;64</figcaption></figure></div>
-<div class="thoughts"><span class="label">Prompts (hybrid 1)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompts (hybrid 1)</span><p>Distant: a green alien. Close: a green jello.</p></div>
 <h3>Hybrid 2</h3>
 <div class="pair"><figure style="width:320px"><img data-ph src="img/a/hybrid_1.png" alt="Full size"><figcaption>Full size</figcaption></figure><figure style="width:64px"><img data-ph src="img/a/hybrid_1_small.png" alt="Reduced size"><figcaption>64&times;64</figcaption></figure></div>
-<div class="thoughts"><span class="label">Prompts (hybrid 2)</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Prompts (hybrid 2)</span><p>Distant: an upright toothbrush. Close: a giraffe.</p></div>
+<div class="thoughts"><span class="label">Observations</span><p>Other prompts I tried were a painting of a flower (distant) with a painting of a guy (close), and top down view of a head (distant) with top down view of cheeseburger (close). The ones I chose to stick with were the alien and the giraffe. The alien does look kind of like an alien from up close, though you can see how it is also one huge blob of jello. From far away, it is definitely an alien. The giraffe definitely looks like a giraffe from up close, though from far away, it really could be a weird brown toothbrush.</p></div>
 <h2 class="part" id="partb">Part B &mdash; Flow Matching from Scratch</h2>
 <h2>1.2 &mdash; Noising Process</h2>
 <div class="stack"><figure><img data-ph src="img/b/noising_process.png" alt="&amp;sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0"><figcaption>&sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0</figcaption></figure></div>
 <h2>1.2.1 &mdash; Training the Denoiser</h2>
 <div class="grid g2"><figure><img data-ph src="img/b/denoise_loss.png" alt="Training loss (&amp;sigma; = 0.5)"><figcaption>Training loss (&sigma; = 0.5)</figcaption></figure></div>
 <div class="grid g2"><figure><img data-ph src="img/b/denoise_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/denoise_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>Denoising from epoch 1 to 5, there is only a marginal improvement. Already at epoch 1, the model can denoise the image almost perfectly, and this shows in the loss too, through how there is only a marginal improvement in steps past step 100, which was taken in epoch 1.</p></div>
 <h2>1.2.2 &mdash; Out-of-Distribution Testing</h2>
 <div class="stack"><figure><img data-ph src="img/b/denoise_ood.png" alt="Same test digit, &amp;sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0"><figcaption>Same test digit, &sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>Up to 0.6, a clean 7 gets outputted, though it turns into a mess past that, inventing new numbers and letters.</p></div>
 <h2>1.2.3 &mdash; Denoising Pure Noise</h2>
 <div class="grid g2"><figure><img data-ph src="img/b/pure_noise_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure></div>
 <div class="grid g2"><figure><img data-ph src="img/b/pure_noise_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/pure_noise_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure></div>
-<div class="thoughts"><span class="label">Patterns observed in the outputs</span><p class="todo">TODO</p></div>
-<div class="thoughts"><span class="label">Relationship to the training images</span><p class="todo">TODO</p></div>
-<div class="thoughts"><span class="label">Why this happens</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Patterns observed in the outputs</span><p>All outputs for both cases are the same blurry smudge, kind of like all the digits overlaid into one.</p></div>
+<div class="thoughts"><span class="label">Relationship to the training images</span><p>The output looks like an average of all the training images.</p></div>
+<div class="thoughts"><span class="label">Why this happens</span><p>MSE loss promotes this by rewarding the model is estimating the average of all these digits, the loss is distance and it is minimized if the prediction is smallest distance it can be from the all the ground truths, resulting in averages.</p></div>
 <h2>2.2 &mdash; Training the Time-Conditioned UNet</h2>
 <div class="grid g2"><figure><img data-ph src="img/b/time_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure></div>
 <h2>2.3 &mdash; Sampling from the Time-Conditioned UNet</h2>
 <div class="grid g3"><figure><img data-ph src="img/b/time_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/time_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure><figure><img data-ph src="img/b/time_epoch10.png" alt="Epoch 10"><figcaption>Epoch 10</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>At epoch 1, there is only around 1 good digit, and the others just look like an amalgamation of different digits. At epoch 5, there are around 4-5 good digits, and at epoch 10, there are about 6 good digits, with the rest looking like new inventions that would be plausible if it was my first time seeing numbers.</p></div>
 <h2>2.5 &mdash; Training the Class-Conditioned UNet</h2>
 <div class="grid g2"><figure><img data-ph src="img/b/class_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure></div>
 <h2>2.6 &mdash; Sampling from the Class-Conditioned UNet</h2>
 <div class="grid g3"><figure><img data-ph src="img/b/class_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/class_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure><figure><img data-ph src="img/b/class_epoch10.png" alt="Epoch 10"><figcaption>Epoch 10</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p>It is already pretty good in epoch 1. Most numbers are legible, and it has basically converged in epoch 5, getting marginally better in epoch 10. From 1 to 5 to 10, the images get sharper but it was always very accurate.</p></div>
 <h3>Without the learning rate scheduler</h3>
 <div class="grid g2"><figure><img data-ph src="img/b/no_scheduler_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure><figure><img data-ph src="img/b/no_scheduler_samples.png" alt="Samples"><figcaption>Samples</figcaption></figure></div>
-<div class="thoughts"><span class="label">What I did to compensate for removing the scheduler</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">What I did to compensate for removing the scheduler</span><p>To compensate, I lowered the learning rate from 1e-2 to a constant 1e-3, so the model takes smaller steps from the start and approaches the same small step size that the scheduler eventually decays to. Without the learning rate scheduler and training to epoch 10, the images are slightly more blobby. The shapes of the numbers are less defined, and it seems like it will take a little more epochs to converge. What you get from this is an easier way to train for more epochs, because the learning rate just stays constant, though you WILL have to train for more epochs.</p></div>
     <script>
 document.querySelectorAll('img[data-ph]').forEach(function (img) {
     function ph() {
