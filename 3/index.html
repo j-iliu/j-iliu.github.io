@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project 3: Flow Matching</title>
+    <style>
+        :root {
+            --ink: #1c1c1c;
+            --muted: #6b6b6b;
+            --line: #e4e4e4;
+            --bg: #f2ede3;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0 auto;
+            max-width: 820px;
+            padding: 60px 24px 100px;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--bg);
+        }
+        a { color: inherit; }
+        a.back {
+            display: inline-block;
+            font-size: 0.85em;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 40px;
+            border: 1px solid var(--line);
+            padding: 6px 14px;
+        }
+        a.back:hover { border-color: var(--muted); color: var(--ink); }
+        h1 { font-size: 1.9em; font-weight: 600; margin: 0 0 4px; }
+        .subtitle { color: var(--muted); margin: 0 0 24px; font-size: 0.95em; }
+        nav.parts { display: flex; gap: 10px; margin: 0 0 40px; flex-wrap: wrap; }
+        nav.parts a {
+            font-size: 0.85em;
+            text-decoration: none;
+            border: 1px solid var(--line);
+            padding: 6px 14px;
+            color: var(--muted);
+        }
+        nav.parts a:hover { border-color: var(--muted); color: var(--ink); background: #fff; }
+        h2 {
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+            margin-top: 70px;
+            margin-bottom: 24px;
+        }
+        h2.part { font-size: 1.5em; margin-top: 90px; border-bottom: 2px solid var(--ink); }
+        h3 { font-size: 0.95em; font-weight: 600; margin: 40px 0 12px; }
+        p { margin: 0 0 14px; }
+        img { width: 100%; height: auto; display: block; }
+        figure { margin: 0; }
+        figcaption { text-align: center; font-size: 0.85em; color: var(--muted); margin-top: 8px; }
+        .grid { display: grid; gap: 24px 16px; margin: 16px 0; }
+        .g2 { grid-template-columns: repeat(2, 1fr); }
+        .g3 { grid-template-columns: repeat(3, 1fr); }
+        .g4 { grid-template-columns: repeat(4, 1fr); }
+        .narrow { max-width: 460px; margin: 16px auto; }
+        .pair { display: flex; gap: 28px; align-items: flex-end; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+        .pair figure { max-width: 100%; }
+        .pair .ph { min-height: 64px; }
+        .stack { display: grid; gap: 24px; margin: 16px 0; }
+        .thoughts { margin-top: 24px; padding-left: 16px; border-left: 2px solid var(--line); }
+        .thoughts p { margin: 0 0 10px; color: #333; }
+        .thoughts p:last-child { margin-bottom: 0; }
+        .thoughts .label {
+            display: block;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .todo { color: #b3261e !important; font-weight: 600; }
+        .ph {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 140px;
+            border: 1px dashed var(--muted);
+            background: rgba(255,255,255,0.4);
+            color: var(--muted);
+            font-size: 0.75em;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            padding: 12px;
+            text-align: center;
+            word-break: break-all;
+        }
+        code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+        @media (max-width: 640px) {
+            .g3, .g4 { grid-template-columns: repeat(2, 1fr); }
+        }
+</style>
+</head>
+<body>
+    <a class="back" href="../index.html">&larr; Back to portfolio</a>
+    <h1>Project 3: Flow Matching</h1>
+    <p class="subtitle">CS180 &middot; Intro to Computer Vision and Computational Photography</p>
+    <nav class="parts"><a href="#parta">Part A</a><a href="#partb">Part B</a></nav>
+
+<h2 class="part" id="parta">Part A &mdash; Exploring the Power of Flow Models</h2>
+<h2>1.1 &mdash; Constructing Noisy Training Inputs</h2>
+<div class="stack"><figure><img data-ph src="img/a/training_inputs.png" alt="Original and noisy inputs, t = 0.25, 0.50, 0.75"><figcaption>Original and noisy inputs, t = 0.25, 0.50, 0.75</figcaption></figure></div>
+<h2>1.2 &mdash; Classical Denoising</h2>
+<div class="stack"><figure><img data-ph src="img/a/blur_0.25.png" alt="Noisy input and Gaussian blur, t = 0.25"><figcaption>Noisy input and Gaussian blur, t = 0.25</figcaption></figure><figure><img data-ph src="img/a/blur_0.5.png" alt="Noisy input and Gaussian blur, t = 0.5"><figcaption>Noisy input and Gaussian blur, t = 0.5</figcaption></figure><figure><img data-ph src="img/a/blur_0.75.png" alt="Noisy input and Gaussian blur, t = 0.75"><figcaption>Noisy input and Gaussian blur, t = 0.75</figcaption></figure></div>
+<div class="thoughts"><span class="label">Blur strength chosen</span><p class="todo">TODO</p></div>
+<h2>1.3 &mdash; One-Step Denoising</h2>
+<div class="stack"><figure><img data-ph src="img/a/one_step_0.25.png" alt="Original, noisy input and one-step estimate, t = 0.25"><figcaption>Original, noisy input and one-step estimate, t = 0.25</figcaption></figure><figure><img data-ph src="img/a/one_step_0.5.png" alt="Original, noisy input and one-step estimate, t = 0.5"><figcaption>Original, noisy input and one-step estimate, t = 0.5</figcaption></figure><figure><img data-ph src="img/a/one_step_0.75.png" alt="Original, noisy input and one-step estimate, t = 0.75"><figcaption>Original, noisy input and one-step estimate, t = 0.75</figcaption></figure></div>
+<h2>1.4 &mdash; Visualizing Velocity</h2>
+<div class="narrow"><figure><img data-ph src="img/a/velocity_original.png" alt="Original"><figcaption>Original</figcaption></figure></div>
+<div class="stack"><figure><img data-ph src="img/a/velocity_0.25.png" alt="t = 0.25"><figcaption>t = 0.25</figcaption></figure><figure><img data-ph src="img/a/velocity_0.50.png" alt="t = 0.50"><figcaption>t = 0.50</figcaption></figure><figure><img data-ph src="img/a/velocity_0.75.png" alt="t = 0.75"><figcaption>t = 0.75</figcaption></figure></div>
+<div class="thoughts"><span class="label">Error heatmap limits</span><p class="todo">TODO</p></div>
+<h2>1.5 &mdash; Iterative Denoising with Euler Sampling</h2>
+<h3>Euler denoising trajectory</h3>
+<div class="stack"><figure><img data-ph src="img/a/trajectory.png" alt="Initial state, every fifth update and final image"><figcaption>Initial state, every fifth update and final image</figcaption></figure></div>
+<h3>Denoising methods</h3>
+<div class="stack"><figure><img data-ph src="img/a/comparison.png" alt="Original, Gaussian blur, one-step estimate, Euler denoising"><figcaption>Original, Gaussian blur, one-step estimate, Euler denoising</figcaption></figure></div>
+<div class="thoughts"><span class="label">Comparison of methods</span><p class="todo">TODO</p></div>
+<h2>1.6 &mdash; Generating Images from Noise</h2>
+<div class="stack"><figure><img data-ph src="img/a/conditional_samples.png" alt="Seeds 180&amp;ndash;184, &amp;ldquo;a high quality photo&amp;rdquo;"><figcaption>Seeds 180&ndash;184, &ldquo;a high quality photo&rdquo;</figcaption></figure></div>
+<div class="thoughts"><span class="label">Observations on the generic prompt</span><p class="todo">TODO</p></div>
+<h2>2.1 &mdash; Classifier-Free Guidance</h2>
+<div class="stack"><figure><img data-ph src="img/a/cfg_samples.png" alt="Seeds 180&amp;ndash;184, guidance w = 7"><figcaption>Seeds 180&ndash;184, guidance w = 7</figcaption></figure></div>
+<div class="thoughts"><span class="label">Comparison with Section 1.6</span><p class="todo">TODO</p></div>
+<h2>3.1 &mdash; Image-to-Image Editing</h2>
+<h3>Campanile</h3>
+<div class="stack"><figure><img data-ph src="img/a/edit_campanile.png" alt="Starting times 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50"><figcaption>Starting times 0.02, 0.04, 0.06, 0.10, 0.14, 0.25, 0.50</figcaption></figure></div>
+<h3>My image 1</h3>
+<div class="stack"><figure><img data-ph src="img/a/edit_my_image_1.png" alt="img/a/edit_my_image_1.png"></figure></div>
+<h3>My image 2</h3>
+<div class="stack"><figure><img data-ph src="img/a/edit_my_image_2.png" alt="img/a/edit_my_image_2.png"></figure></div>
+<h3>Web image</h3>
+<div class="stack"><figure><img data-ph src="img/a/edit_web_image.png" alt="img/a/edit_web_image.png"></figure></div>
+<h3>Drawing 1</h3>
+<div class="stack"><figure><img data-ph src="img/a/edit_drawing_1.png" alt="img/a/edit_drawing_1.png"></figure></div>
+<h3>Drawing 2</h3>
+<div class="stack"><figure><img data-ph src="img/a/edit_drawing_2.png" alt="img/a/edit_drawing_2.png"></figure></div>
+<div class="thoughts"><span class="label">Observations</span><p class="todo">TODO</p></div>
+<h2>3.2 &mdash; Text-Guided Image Editing</h2>
+<h3>Campanile</h3>
+<div class="stack"><figure><img data-ph src="img/a/text_edit_campanile.png" alt="img/a/text_edit_campanile.png"></figure></div>
+<div class="thoughts"><span class="label">Prompt (Campanile)</span><p class="todo">TODO</p></div>
+<h3>My image 1</h3>
+<div class="stack"><figure><img data-ph src="img/a/text_edit_my_image_1.png" alt="img/a/text_edit_my_image_1.png"></figure></div>
+<div class="thoughts"><span class="label">Prompt (my image 1)</span><p class="todo">TODO</p></div>
+<h3>My image 2</h3>
+<div class="stack"><figure><img data-ph src="img/a/text_edit_my_image_2.png" alt="img/a/text_edit_my_image_2.png"></figure></div>
+<div class="thoughts"><span class="label">Prompt (my image 2)</span><p class="todo">TODO</p></div>
+<h2>3.3 &mdash; Visual Anagrams</h2>
+<h3>Illusion 1</h3>
+<div class="stack"><figure><img data-ph src="img/a/anagram_views_0.png" alt="Upright and rotated 180&amp;deg;"><figcaption>Upright and rotated 180&deg;</figcaption></figure></div>
+<div class="thoughts"><span class="label">Prompts (illusion 1)</span><p class="todo">TODO</p></div>
+<h3>Illusion 2</h3>
+<div class="stack"><figure><img data-ph src="img/a/anagram_views_1.png" alt="Upright and rotated 180&amp;deg;"><figcaption>Upright and rotated 180&deg;</figcaption></figure></div>
+<div class="thoughts"><span class="label">Prompts (illusion 2)</span><p class="todo">TODO</p></div>
+<h2>3.4 &mdash; Hybrid Images</h2>
+<h3>Hybrid 1</h3>
+<div class="pair"><figure style="width:320px"><img data-ph src="img/a/hybrid_0.png" alt="Full size"><figcaption>Full size</figcaption></figure><figure style="width:64px"><img data-ph src="img/a/hybrid_0_small.png" alt="Reduced size"><figcaption>64&times;64</figcaption></figure></div>
+<div class="thoughts"><span class="label">Prompts (hybrid 1)</span><p class="todo">TODO</p></div>
+<h3>Hybrid 2</h3>
+<div class="pair"><figure style="width:320px"><img data-ph src="img/a/hybrid_1.png" alt="Full size"><figcaption>Full size</figcaption></figure><figure style="width:64px"><img data-ph src="img/a/hybrid_1_small.png" alt="Reduced size"><figcaption>64&times;64</figcaption></figure></div>
+<div class="thoughts"><span class="label">Prompts (hybrid 2)</span><p class="todo">TODO</p></div>
+<h2 class="part" id="partb">Part B &mdash; Flow Matching from Scratch</h2>
+<h2>1.2 &mdash; Noising Process</h2>
+<div class="stack"><figure><img data-ph src="img/b/noising_process.png" alt="&amp;sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0"><figcaption>&sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0</figcaption></figure></div>
+<h2>1.2.1 &mdash; Training the Denoiser</h2>
+<div class="grid g2"><figure><img data-ph src="img/b/denoise_loss.png" alt="Training loss (&amp;sigma; = 0.5)"><figcaption>Training loss (&sigma; = 0.5)</figcaption></figure></div>
+<div class="grid g2"><figure><img data-ph src="img/b/denoise_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/denoise_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure></div>
+<h2>1.2.2 &mdash; Out-of-Distribution Testing</h2>
+<div class="stack"><figure><img data-ph src="img/b/denoise_ood.png" alt="Same test digit, &amp;sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0"><figcaption>Same test digit, &sigma; = 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0</figcaption></figure></div>
+<h2>1.2.3 &mdash; Denoising Pure Noise</h2>
+<div class="grid g2"><figure><img data-ph src="img/b/pure_noise_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure></div>
+<div class="grid g2"><figure><img data-ph src="img/b/pure_noise_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/pure_noise_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure></div>
+<div class="thoughts"><span class="label">Patterns observed in the outputs</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Relationship to the training images</span><p class="todo">TODO</p></div>
+<div class="thoughts"><span class="label">Why this happens</span><p class="todo">TODO</p></div>
+<h2>2.2 &mdash; Training the Time-Conditioned UNet</h2>
+<div class="grid g2"><figure><img data-ph src="img/b/time_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure></div>
+<h2>2.3 &mdash; Sampling from the Time-Conditioned UNet</h2>
+<div class="grid g3"><figure><img data-ph src="img/b/time_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/time_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure><figure><img data-ph src="img/b/time_epoch10.png" alt="Epoch 10"><figcaption>Epoch 10</figcaption></figure></div>
+<h2>2.5 &mdash; Training the Class-Conditioned UNet</h2>
+<div class="grid g2"><figure><img data-ph src="img/b/class_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure></div>
+<h2>2.6 &mdash; Sampling from the Class-Conditioned UNet</h2>
+<div class="grid g3"><figure><img data-ph src="img/b/class_epoch1.png" alt="Epoch 1"><figcaption>Epoch 1</figcaption></figure><figure><img data-ph src="img/b/class_epoch5.png" alt="Epoch 5"><figcaption>Epoch 5</figcaption></figure><figure><img data-ph src="img/b/class_epoch10.png" alt="Epoch 10"><figcaption>Epoch 10</figcaption></figure></div>
+<h3>Without the learning rate scheduler</h3>
+<div class="grid g2"><figure><img data-ph src="img/b/no_scheduler_loss.png" alt="Training loss"><figcaption>Training loss</figcaption></figure><figure><img data-ph src="img/b/no_scheduler_samples.png" alt="Samples"><figcaption>Samples</figcaption></figure></div>
+<div class="thoughts"><span class="label">What I did to compensate for removing the scheduler</span><p class="todo">TODO</p></div>
+    <script>
+document.querySelectorAll('img[data-ph]').forEach(function (img) {
+    function ph() {
+        var d = document.createElement('div');
+        d.className = 'ph';
+        d.textContent = img.getAttribute('src');
+        img.replaceWith(d);
+    }
+    img.addEventListener('error', ph);
+    if (img.complete && img.naturalWidth === 0) ph();
+});
+</script>
+</body>
+</html>
