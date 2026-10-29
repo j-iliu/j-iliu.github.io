@@ -121,7 +121,7 @@ def warpImageBilinear(im, H):
 
     return im_out, alpha, box_wmin, box_hmin
 
-def feather(h, w):
+def weighted_av(h, w):
     ry = np.minimum(np.arange(h), np.arange(h)[::-1]) + 1.0
     rx = np.minimum(np.arange(w), np.arange(w)[::-1]) + 1.0
     return ry[:, None] * rx[None, :]
@@ -130,10 +130,10 @@ def make_mosaic(im1, im2, im1_pts, im2_pts):
     H = computeH(im1_pts, im2_pts)
 
     w1, _, bmi1, bma1 = warpImageBilinear(im1, H)
-    a1, _, _, _ = warpImageBilinear(feather(*im1.shape[:2])[..., None], H)
+    a1, _, _, _ = warpImageBilinear(weighted_av(*im1.shape[:2])[..., None], H)
     a1 = a1[..., 0]
     w2 = im2
-    a2 = feather(*im2.shape[:2])
+    a2 = weighted_av(*im2.shape[:2])
     bmi2 = 0
     bma2 = 0
 
