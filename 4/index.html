@@ -113,7 +113,7 @@ th { font-weight: 600; background: rgba(255,255,255,0.5); }
 <h2 class="part" id="parta">Part A &mdash; Image Warping and Mosaicing</h2>
 
 <h2>A.1 &mdash; Shoot the Pictures</h2>
-<p class="todo">TODO: describe how the photos were shot (fixed center of projection, rotating camera, overlap).</p>
+<p>I stood in one spot and rotated my phone around the axis of the camera so the camera stayed in the same place. I aimed for about 40% overlap in my photos and shot each of the 3 sets quickly to keep changes in the scene to a minimum.</p>
 <h3>Set 1</h3>
 <div class="grid g2"><figure><img data-ph src="img/a/gw_1.jpg" alt="Set 1, image 1"><figcaption>Set 1, image 1</figcaption></figure><figure><img data-ph src="img/a/gw_2.jpg" alt="Set 1, image 2"><figcaption>Set 1, image 2</figcaption></figure></div>
 <h3>Set 2</h3>
@@ -122,7 +122,12 @@ th { font-weight: 600; background: rgba(255,255,255,0.5); }
 <div class="grid g2"><figure><img data-ph src="img/a/sn_1.jpg" alt="Set 3, image 1"><figcaption>Set 3, image 1</figcaption></figure><figure><img data-ph src="img/a/sn_2.jpg" alt="Set 3, image 2"><figcaption>Set 3, image 2</figcaption></figure></div>
 
 <h2>A.2 &mdash; Recover Homographies</h2>
-<div class="grid g2"><figure><img data-ph src="img/a/corr_1.png" alt="Correspondences, image 1"><figcaption>Correspondences, image 1</figcaption></figure><figure><img data-ph src="img/a/corr_2.png" alt="Correspondences, image 2"><figcaption>Correspondences, image 2</figcaption></figure></div>
+<h3>Gateway</h3>
+<div class="grid g2"><figure><img data-ph src="img/a/corr_gw_1.jpg" alt="Image 1"><figcaption>Image 1</figcaption></figure><figure><img data-ph src="img/a/corr_gw_2.jpg" alt="Image 2"><figcaption>Image 2</figcaption></figure></div>
+<h3>Moffitt whiteboard</h3>
+<div class="grid g2"><figure><img data-ph src="img/a/corr_m_1.jpg" alt="Image 1"><figcaption>Image 1</figcaption></figure><figure><img data-ph src="img/a/corr_m_2.jpg" alt="Image 2"><figcaption>Image 2</figcaption></figure></div>
+<h3>Shattuck North</h3>
+<div class="grid g2"><figure><img data-ph src="img/a/corr_sn_1.jpg" alt="Image 1"><figcaption>Image 1</figcaption></figure><figure><img data-ph src="img/a/corr_sn_2.jpg" alt="Image 2"><figcaption>Image 2</figcaption></figure></div>
 <h3>System of equations</h3>
 <p>I wrote the homogeneous multiplication p' ~ Hp with H = [[h11, h12, h13], [h21, h22, h23], [h31, h32, 1]]:</p>
 <pre>x' = (h11&middot;x + h12&middot;y + h13) / (h31&middot;x + h32&middot;y + 1)
@@ -168,10 +173,6 @@ y' = h21&middot;x + h22&middot;y + h23 &minus; h31&middot;x&middot;y' &minus; h3
 <div class="grid g3"><figure><img data-ph src="img/a/m_1.jpg" alt="Source 1"><figcaption>Source 1</figcaption></figure><figure><img data-ph src="img/a/m_2.jpg" alt="Source 2"><figcaption>Source 2</figcaption></figure><figure><img data-ph src="img/a/mosaic_m.jpg" alt="Mosaic"><figcaption>Mosaic</figcaption></figure></div>
 <h3>Mosaic 3</h3>
 <div class="grid g3"><figure><img data-ph src="img/a/sn_1.jpg" alt="Source 1"><figcaption>Source 1</figcaption></figure><figure><img data-ph src="img/a/sn_2.jpg" alt="Source 2"><figcaption>Source 2</figcaption></figure><figure><img data-ph src="img/a/mosaic_sn.jpg" alt="Mosaic"><figcaption>Mosaic</figcaption></figure></div>
-
-<h2>A.5 &mdash; Bells &amp; Whistles</h2>
-<div class="stack"><figure><img data-ph src="img/a/bw_cylindrical.png" alt="Cylindrical / spherical mapping"><figcaption>Cylindrical / spherical mapping</figcaption></figure></div>
-<div class="thoughts"><span class="label">Notes</span><p class="todo">TODO</p></div>
 
     <script>
 document.querySelectorAll('img[data-ph]').forEach(function (img) {
