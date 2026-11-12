@@ -133,6 +133,17 @@ def show_matches(im1, im2, pts1, pts2, path):  # pts are (m, 2) as (x, y)
         plt.plot([x1, x2 + off], [y1, y2], lw=0.7)
     plt.axis('off'); plt.savefig(path, dpi=150, bbox_inches='tight'); plt.close()
 
+def show_matched_patches(g1, g2, pts1, pts2, path, k=6):
+    b1, b2 = blur(g1), blur(g2)
+    sel = np.linspace(0, len(pts1) - 1, k).astype(int)  
+    fig, ax = plt.subplots(2, k, figsize=(2*k, 4))
+    for n, s in enumerate(sel):
+        (x1, y1), (x2, y2) = pts1[s], pts2[s]
+        ax[0, n].imshow(b1[y1-20:y1+20, x1-20:x1+20], cmap='gray')
+        ax[1, n].imshow(b2[y2-20:y2+20, x2-20:x2+20], cmap='gray')
+        ax[0, n].axis('off'); ax[1, n].axis('off')
+    plt.savefig(path, dpi=150, bbox_inches='tight'); plt.close()
+
 if __name__ == "__main__":
     g = img2arr('4/raw/sn_1.jpg')
     h, coords = get_harris_corners(g)
@@ -149,6 +160,7 @@ if __name__ == "__main__":
         print(tag, 'inliers:', mask.sum(), 'of', len(mask))
 
         show_matches(g1, g2, p1[mask], p2[mask], f'4/img/b/matches_{tag}.jpg')
+        show_matched_patches(g1, g2, p1[mask], p2[mask], f'4/img/b/patches_{tag}.jpg')
 
         im1, im2 = load_rgb(f'4/raw/{a}.jpg'), load_rgb(f'4/raw/{b}.jpg')
         mosaic = make_mosaic(im1, im2, p1[mask], p2[mask])
