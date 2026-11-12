@@ -108,7 +108,7 @@ th { font-weight: 600; background: rgba(255,255,255,0.5); }
     <a class="back" href="../index.html">&larr; Back to portfolio</a>
     <h1>Project 4: Image Warping and Mosaicing</h1>
     <p class="subtitle">CS180 &middot; Intro to Computer Vision and Computational Photography</p>
-    <nav class="parts"><a href="#parta">Part A</a></nav>
+    <nav class="parts"><a href="#parta">Part A</a><a href="#partb">Part B</a></nav>
 
 <h2 class="part" id="parta">Part A &mdash; Image Warping and Mosaicing</h2>
 
@@ -173,6 +173,26 @@ y' = h21&middot;x + h22&middot;y + h23 &minus; h31&middot;x&middot;y' &minus; h3
 <div class="grid g3"><figure><img data-ph src="img/a/m_1.jpg" alt="Source 1"><figcaption>Source 1</figcaption></figure><figure><img data-ph src="img/a/m_2.jpg" alt="Source 2"><figcaption>Source 2</figcaption></figure><figure><img data-ph src="img/a/mosaic_m.jpg" alt="Mosaic"><figcaption>Mosaic</figcaption></figure></div>
 <h3>Mosaic 3</h3>
 <div class="grid g3"><figure><img data-ph src="img/a/sn_1.jpg" alt="Source 1"><figcaption>Source 1</figcaption></figure><figure><img data-ph src="img/a/sn_2.jpg" alt="Source 2"><figcaption>Source 2</figcaption></figure><figure><img data-ph src="img/a/mosaic_sn.jpg" alt="Mosaic"><figcaption>Mosaic</figcaption></figure></div>
+
+<h2 class="part" id="partb">Part B &mdash; Feature Matching for Autostitching</h2>
+
+<h2>B.1 &mdash; Harris Corner Detection</h2><div class="grid g2"><figure><img data-ph src="img/b/harris_sn_1.jpg" alt="Harris corners"><figcaption>Harris corners</figcaption></figure><figure><img data-ph src="img/b/anms_sn_1.jpg" alt="With ANMS"><figcaption>With ANMS</figcaption></figure></div>
+
+<h2>B.2 &mdash; Feature Descriptor Extraction</h2><div class="narrow"><figure><img data-ph src="img/b/desc_sn_1.jpg" alt="Extracted features"><figcaption>Extracted features</figcaption></figure></div>
+
+<h2>B.3 &mdash; Feature Matching</h2><h3>Set 1</h3>
+<div class="narrow"><figure><img data-ph src="img/b/matches_gw.jpg" alt="Set 1 matches"><figcaption>Matches</figcaption></figure></div>
+<h3>Set 2</h3>
+<div class="narrow"><figure><img data-ph src="img/b/matches_m.jpg" alt="Set 2 matches"><figcaption>Matches</figcaption></figure></div>
+<h3>Set 3</h3>
+<div class="narrow"><figure><img data-ph src="img/b/matches_sn.jpg" alt="Set 3 matches"><figcaption>Matches</figcaption></figure></div>
+
+<h2>B.4 &mdash; RANSAC and Mosaics</h2><h3>Set 1</h3>
+<div class="grid g2"><figure><img data-ph src="img/b/manual_gw.jpg" alt="Set 1 manual"><figcaption>Manual</figcaption></figure><figure><img data-ph src="img/b/auto_gw.jpg" alt="Set 1 automatic"><figcaption>Automatic</figcaption></figure></div>
+<h3>Set 2</h3>
+<div class="grid g2"><figure><img data-ph src="img/b/manual_m.jpg" alt="Set 2 manual"><figcaption>Manual</figcaption></figure><figure><img data-ph src="img/b/auto_m.jpg" alt="Set 2 automatic"><figcaption>Automatic</figcaption></figure></div>
+<h3>Set 3</h3>
+<div class="grid g2"><figure><img data-ph src="img/b/manual_sn.jpg" alt="Set 3 manual"><figcaption>Manual</figcaption></figure><figure><img data-ph src="img/b/auto_sn.jpg" alt="Set 3 automatic"><figcaption>Automatic</figcaption></figure></div>
 
     <script>
 document.querySelectorAll('img[data-ph]').forEach(function (img) {
